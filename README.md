@@ -13,3 +13,4 @@ this code implements the method proposed in paper "Weakly Supervised Segmentatio
   
   *utils_GAN : define some tool functions
   
+any problem please email me : mafeimf@buaa.edu.cn
