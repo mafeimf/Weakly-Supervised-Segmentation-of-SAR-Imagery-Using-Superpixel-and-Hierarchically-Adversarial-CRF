@@ -1,9 +1,10 @@
 
 # coding: utf-8
 
-# # 训练CGAN_32
 
-# ## 读取标记数据和未标记数据<div class="cite2c-biblio"></div>
+# # Step 1 : read data and train the target CGAN (TCGAN)
+
+# ## 1.1 read training data and test data from a large scale SAR image
 
 import torch as t
 from torch import nn
@@ -49,7 +50,7 @@ train_patch_ind=[5,10,15,20,21,25,30]
 def crop_fun(new_input_padding,wi_ipt,hi_ipt,patch_size):
     patch_out=new_input_padding[wi_ipt:wi_ipt+patch_size,hi_ipt:hi_ipt+patch_size]
     return patch_out
-'''
+
 
 def read_img(rownum,colnum,iput_img_original,gt_original,train_patch_ind):
     ALL_DATA_X_L=[]
@@ -62,8 +63,7 @@ def read_img(rownum,colnum,iput_img_original,gt_original,train_patch_ind):
     colwidth = w_ipt // colnum
 
     for r in range(rownum):#
-        for c in range(colnum):#
-            
+        for c in range(colnum):#           
             iput_img= iput_img_original[r * rowheight:(r + 1) * rowheight,c * colwidth:(c + 1) * colwidth];
             gt      = gt_original      [r * rowheight:(r + 1) * rowheight,c * colwidth:(c + 1) * colwidth,:];
           
@@ -192,7 +192,7 @@ def read_img(rownum,colnum,iput_img_original,gt_original,train_patch_ind):
     return np.array(ALL_DATA_X_L).astype(np.int),  np.array(ALL_DATA_Y_L),  np.array(ALL_DATA_X_no_L) ,np.array(ALL_DATA_Y_no_L)
 
 
-# In[3]:
+
 
 ALL_DATA_X_L, ALL_DATA_Y_L, ALL_DATA_X_no_L,ALL_DATA_Y_no_L=read_img(rownum,colnum,iput_img_original,gt_original,train_patch_ind)
 
@@ -222,21 +222,10 @@ ALL_DATA_X_no_L = torch.from_numpy(ALL_DATA_X_no_L).type(torch.FloatTensor)
 
 
 ALL_DATA_Y_no_L = ALL_DATA_Y_no_L[index_train]  
-# ALL_DATA_Y_no_L_vec = np.zeros((len(ALL_DATA_Y_no_L), num_label), dtype=np.float)
-# for i, label in enumerate(ALL_DATA_Y_no_L):
-#     ALL_DATA_Y_no_L_vec[i, ALL_DATA_Y_no_L[i]] = 1    
-
-# ALL_DATA_Y_no_L_vec = torch.from_numpy(ALL_DATA_Y_no_L_vec).type(torch.FloatTensor)
-
-
-# In[7]:
 
 
 
-# ## CGAN网络参数初始化
-
-# In[4]:
-
+# ## TCGAN网络参数初始化
 
 import argparse, os
 import numpy as np
@@ -261,7 +250,7 @@ args=Config()
 print("finished")
 
 
-# ## 训练CGAN
+# ## train TCGAN
 
 from DCGAN_FangChengGang_16 import DCGAN_1G_Class_MSTAR_16
 import os
@@ -276,7 +265,7 @@ print("finished")
 
 ########################################################################################################
 
-# # 训练CGAN_128
+# # Step 2. Train BCGAN
 
 # ## 读取标记数据和未标记数据<div class="cite2c-biblio"></div>
 
@@ -326,11 +315,6 @@ def crop_fun(new_input_padding,wi_ipt,hi_ipt,patch_size):
     patch_out=new_input_padding[wi_ipt:wi_ipt+patch_size,hi_ipt:hi_ipt+patch_size]
     return patch_out
 
-'''
-
-'''
-# In[ ]:
-
 
 ALL_DATA_X_L, ALL_DATA_Y_L, ALL_DATA_X_no_L,ALL_DATA_Y_no_L=read_img(rownum,colnum,iput_img_original,gt_original,train_patch_ind)
 
@@ -359,16 +343,10 @@ ALL_DATA_X_no_L = torch.from_numpy(ALL_DATA_X_no_L).type(torch.FloatTensor)
 
 
 ALL_DATA_Y_no_L = ALL_DATA_Y_no_L[index_train]  
-# ALL_DATA_Y_no_L_vec = np.zeros((len(ALL_DATA_Y_no_L), num_label), dtype=np.float)
-# for i, label in enumerate(ALL_DATA_Y_no_L):
-#     ALL_DATA_Y_no_L_vec[i, ALL_DATA_Y_no_L[i]] = 1    
-
-# ALL_DATA_Y_no_L_vec = torch.from_numpy(ALL_DATA_Y_no_L_vec).type(torch.FloatTensor)
 
 
-# ## CGAN网络参数初始化
+# ## BCGAN网络参数初始化
 
-# In[4]:
 
 
 import argparse, os
@@ -395,12 +373,7 @@ args=Config()
 print("finished")
 
 
-# ## 训练CGAN
-
-# In[6]:
-
-
-#         train the GANs 
+# ## Train BCGAN
 
 from DCGAN_FangChengGang_64 import DCGAN_1G_Class_MSTAR_64
 import os
@@ -415,10 +388,8 @@ print("finished")
 
 
 ####################################################################################################3
-# # 对CGAN中的D网络进行Fine-tune
-'''
+# # Fine-tune the hierarchical CGAN
 
-'''
 import torch as t
 from torch import nn
 from torch.autograd import Variable
@@ -541,20 +512,18 @@ with open('acc_all_'+'_DCGAN_1G_Class_MSTAR.txt','w') as f:
     f.write(str(std_test_acc_2g_Class)) 
 
 
-# ## 保存/查看 Fine tune后的D网络的参数
-
-# In[6]:
+# ## save the parameter of hierarchical cgans 
 
 torch.save(cnn_2g_Class.D.state_dict(),'./Discriminator_state_dict_6trainImg_Hiera_16_64_Epoch10.pt')
 
-'''
+
 ##############################################################################################################
 
 
 import time
 start = time.time()
 
-# # 训练GAN-based CRF
+# # step 3：train CRF using CRF
 # ## 利用 微调后的D网络的参数，搭建特征提取网络 ExtractFea
 import torch as t
 from torch import nn
@@ -710,9 +679,6 @@ def ExtractFeature(ExtractFea, test_loader_large,test_loader_small):
 
 
 # ### for Graph-CRF
-
-# In[32]:
-
 
 # crop the original input to a set of smaller size images
 from torchtools import train_CNN,testCNN,get_dataloader,evaluateCNN,PredictCNN
