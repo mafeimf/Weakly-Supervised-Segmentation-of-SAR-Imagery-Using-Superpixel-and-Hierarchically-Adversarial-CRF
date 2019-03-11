@@ -1,5 +1,5 @@
 # Weakly-Supervised-Segmentation-of-SAR-Imagery-Using-Superpixel-and-Hierarchically-Adversarial-CRF
-this code implements the method proposed in paper "Weakly Supervised Segmentation of SAR Imagery Using Superpixel and Hierarchically Adversarial CRF". if it helps you, please kindly cite this paper
+this code implements the method proposed in paper "Weakly Supervised Segmentation of SAR Imagery Using Superpixel and Hierarchically Adversarial CRF". if it helps you, please kindly cite this paper. https://www.mdpi.com/2072-4292/11/5/512
 
   *Read_img_Gan.py : transfer the large-scale SAR image into superpixels, which will be used to Fine-tune the Hierarchy CGAN
   
