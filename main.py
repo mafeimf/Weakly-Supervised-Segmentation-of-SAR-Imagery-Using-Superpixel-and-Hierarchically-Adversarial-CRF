@@ -265,9 +265,9 @@ print("finished")
 
 ########################################################################################################
 
-# # Step 2. Train BCGAN
+# # Step 2. Read data and train BCGAN
 
-# ## 读取标记数据和未标记数据<div class="cite2c-biblio"></div>
+# ## 读取标记数据和未标记数据
 
 import torch as t
 from torch import nn
@@ -388,7 +388,7 @@ print("finished")
 
 
 ####################################################################################################3
-# # Fine-tune the hierarchical CGAN
+# # Step 3 :the labeled data is used to fine-tune the dual CGANs
 
 import torch as t
 from torch import nn
@@ -451,7 +451,7 @@ for i, label in enumerate(ALL_DATA_Y_no_L_small):
     ALL_DATA_Y_no_L_vec_small[i, ALL_DATA_Y_no_L_small[i]] = 1
 ALL_DATA_Y_no_L_vec_small = torch.from_numpy(ALL_DATA_Y_no_L_vec_small).type(torch.FloatTensor)
 
-#####################=========================================================
+##########  read data   ###########
 patch_size=64
 ALL_DATA_X_L_larg, ALL_DATA_Y_L_larg, ALL_DATA_X_no_L_larg,ALL_DATA_Y_no_L_larg=Read_img_Gan(h_ipt,w_ipt,n_segments,patch_size,num_label,rownum,colnum,iput_img_original,gt_original,train_patch_ind)
 
@@ -464,8 +464,8 @@ ALL_DATA_X_no_L_larg = ALL_DATA_X_no_L_larg[index_test,:,:]
 ALL_DATA_X_no_L_larg = ALL_DATA_X_no_L_larg.reshape(ALL_DATA_X_no_L_larg.shape[0],1,ALL_DATA_X_no_L_larg.shape[1],ALL_DATA_X_no_L_larg.shape[2])/ 255.
 ALL_DATA_X_no_L_larg = torch.from_numpy(ALL_DATA_X_no_L_larg).type(torch.FloatTensor)
 
-############=============================================================
-#load the weights from GANs, then train and test the CNN
+########### load the weights from the feature extractors of TCGAN and BCGAN, then fine tune these parameters ###########
+
 class Config:
     epoch=int(30)
     batch_size=int(330)
@@ -523,7 +523,7 @@ torch.save(cnn_2g_Class.D.state_dict(),'./Discriminator_state_dict_6trainImg_Hie
 import time
 start = time.time()
 
-# # step 3：train CRF using CRF
+# # step 4：train CRF using CRF
 # ## 利用 微调后的D网络的参数，搭建特征提取网络 ExtractFea
 import torch as t
 from torch import nn
@@ -559,8 +559,6 @@ class Config:
 args=Config()
 
 class new_discriminator(nn.Module):
-    # Network Architecture is exactly same as in infoGAN (https://arxiv.org/abs/1606.03657)
-    # Architecture : (64)4c2s-(128)4c2s_BL-FC1024_BL-FC1_S
     
     def __init__(self,args):
         super(new_discriminator, self).__init__()
