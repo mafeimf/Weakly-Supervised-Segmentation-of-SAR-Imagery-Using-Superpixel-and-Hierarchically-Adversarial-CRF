@@ -11,6 +11,8 @@ this code implements the method proposed in paper "Weakly Supervised Segmentatio
   
   *torchtools.py : define some tool functions
   
-  *utils_GAN : define some tool functions
+  *utils_GAN.py : define some tool functions
+  
+  *main.py : the main function of this project
   
 any problem please email me : mafeimf@buaa.edu.cn
